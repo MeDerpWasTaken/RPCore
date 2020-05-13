@@ -1,0 +1,120 @@
+public class InventoryListener {
+  @Listener
+  public void onClick(ClickInventoryEvent event, @First Player player) {
+    PlayerData playerData = (PlayerData)PlayerModule.getInstance().getPlayerData().get(player.getUniqueId());
+    Container container = event.getTargetInventory();
+    if (!container.getProperties(InventoryTitle.class).isEmpty()) {
+      String str = container.getProperties(InventoryTitle.class).toArray()[0].toString();
+      System.out.println(str);
+      if (container.getProperties(InventoryTitle.class).contains(new InventoryTitle((Text)Text.of("SCP:Foundation Menu")))) {
+        event.setCancelled(true);
+        if (event.getCursorTransaction().isValid() && (
+          (ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).isPresent())
+          if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get())
+            .equals(Text.of(new Object[] { TextColors.WHITE, "Departments" }))) {
+            CommandModule.getInstance().getMainMenu().clickDepartments(player);
+          } else if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get())
+            .equals(Text.of(new Object[] { TextColors.WHITE, "Pronouns" }))) {
+            CommandModule.getInstance().getMainMenu().clickPronouns(player);
+          } else if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get())
+            .equals(Text.of(new Object[] { TextColors.WHITE, "Warps" }))) {
+            CommandModule.getInstance().getMainMenu().clickWarps(player);
+          }
+      } else if (container.getProperties(InventoryTitle.class)
+        .contains(new InventoryTitle((Text)Text.of("SCP:Foundation Pronouns")))) {
+        event.setCancelled(true);
+        if (event.getCursorTransaction().isValid() && (
+          (ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).isPresent())
+          if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get())
+            .equals(Text.of(new Object[] { TextColors.DARK_BLUE, "he/him" }))) {
+            CommandModule.getInstance().getPronounsMenu().onHeClick(player);
+          } else if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.LIGHT_PURPLE, "she/her" }))) {
+            CommandModule.getInstance().getPronounsMenu().onSheClick(player);
+          } else if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.WHITE, "them/them" }))) {
+            CommandModule.getInstance().getPronounsMenu().onTheyClick(player);
+          }
+      } else if (container.getProperties(InventoryTitle.class).contains(new InventoryTitle((Text)Text.of("SCP:Foundation Departments")))) {
+        event.setCancelled(true);
+        if (event.getCursorTransaction().isValid() && (
+          (ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).isPresent()) {
+          if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.RED, "Previous Page" }))) {
+            if (playerData.getPage() != 1) {
+              playerData.setPage(playerData.getPage() - 1);
+              CommandModule.getInstance().getDepartmentsMenu().openPage(player, playerData.getPage());
+            }
+          } else if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.GREEN, "Next Page" })) && ((DepartmentsMenu.DepartmentInventory)CommandModule.getInstance().getDepartmentsMenu().getDepartmentInventoryHashMap().get(player.getUniqueId())).getLastPage() != playerData.getPage()) {
+            playerData.setPage(playerData.getPage() + 1);
+            CommandModule.getInstance().getDepartmentsMenu().openPage(player, playerData.getPage());
+          }
+          if (getDepartment((ItemStackSnapshot)event.getCursorTransaction().getFinal()) != null)
+            CommandModule.getInstance().getDepartmentsMenu().handleDepartment(getDepartment((ItemStackSnapshot)event.getCursorTransaction().getFinal()), player);
+        }
+      } else if (container.getProperties(InventoryTitle.class).contains(new InventoryTitle((Text)Text.of("SCP:Foundation Warp Type")))) {
+        event.setCancelled(true);
+        if (event.getCursorTransaction().isValid() && (
+          (ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).isPresent())
+          if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.WHITE, "Nucleus Warps" })) && ((ItemStackSnapshot)event
+            .getCursorTransaction().getFinal()).getType().equals(ItemTypes.SIGN)) {
+            CommandModule.getInstance().getMainMenu().clickNucleus(player);
+          } else if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.WHITE, "Department Warps" }))) {
+            CommandModule.getInstance().getMainMenu().clickDepartmentWarps(player);
+          }
+      } else if (container.getProperties(InventoryTitle.class).contains(new InventoryTitle((Text)Text.of("SCP:Foundation Nucleus Warps")))) {
+        event.setCancelled(true);
+        if (event.getCursorTransaction().isValid() && (
+          (ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).isPresent())
+          if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.RED, "Previous Page" }))) {
+            if (playerData.getPage() != 1) {
+              playerData.setPage(playerData.getPage() - 1);
+              CommandModule.getInstance().getNucleusWarpMenu().loadPage(player, playerData.getPage());
+            }
+          } else if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.GREEN, "Next Page" }))) {
+            if (CommandModule.getInstance().getNucleusWarpMenu().getLastPage() != playerData.getPage()) {
+              playerData.setPage(playerData.getPage() + 1);
+              CommandModule.getInstance().getNucleusWarpMenu().loadPage(player, playerData.getPage());
+            }
+          } else if (((ItemStackSnapshot)event.getCursorTransaction().getFinal()).getType().equals(ItemTypes.SIGN) && ((ItemStackSnapshot)event
+            .getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).isPresent() &&
+            NucleusAPI.getWarpService().isPresent()) {
+            NucleusWarpService nucleusWarpService = NucleusAPI.getWarpService().get();
+            if (nucleusWarpService.getWarp(((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).toPlain()).isPresent()) {
+              Warp warp = nucleusWarpService.getWarp(((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).toPlain()).get();
+              player.setLocation(warp.getLocation().get());
+              player.closeInventory();
+            }
+          }
+      } else if (container.getProperties(InventoryTitle.class).contains(new InventoryTitle((Text)Text.of("SCP:Foundation Department Warps")))) {
+        event.setCancelled(true);
+        if (event.getCursorTransaction().isValid() && (
+          (ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).isPresent())
+          if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.RED, "Previous Page" }))) {
+            if (playerData.getPage() != 1) {
+              playerData.setPage(playerData.getPage() - 1);
+              CommandModule.getInstance().getDepartmentWarpMenu().openPage(player, playerData.getPage());
+            }
+          } else if (((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).equals(Text.of(new Object[] { TextColors.GREEN, "Next Page" }))) {
+            if (((DepartmentWarpMenu.DepartmentInventory)CommandModule.getInstance().getDepartmentWarpMenu().getDepartmentInventoryHashMap().get(player.getUniqueId())).getLastPage() != playerData.getPage()) {
+              playerData.setPage(playerData.getPage() + 1);
+              CommandModule.getInstance().getDepartmentWarpMenu().openPage(player, playerData.getPage());
+            }
+          } else if (((ItemStackSnapshot)event.getCursorTransaction().getFinal()).getType().equals(ItemTypes.WOOL) &&
+            DepartmentsModule.getInstance().getDepartments().containsKey(((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).toPlain().replace(" ", "_"))) {
+            Department department = (Department)DepartmentsModule.getInstance().getDepartments().get(((Text)((ItemStackSnapshot)event.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get()).toPlain().replace(" ", "_"));
+            if (StorageModule.getInstance().getSpawnHandler().getLOADED_SPAWNS().containsKey(department)) {
+              Location<World> location = new Location((Extent)((DefaultSpawn)StorageModule.getInstance().getSpawnHandler().getLOADED_SPAWNS().get(department)).getWorld(), ((DefaultSpawn)StorageModule.getInstance().getSpawnHandler().getLOADED_SPAWNS().get(department)).getX(), ((DefaultSpawn)StorageModule.getInstance().getSpawnHandler().getLOADED_SPAWNS().get(department)).getY(), ((DefaultSpawn)StorageModule.getInstance().getSpawnHandler().getLOADED_SPAWNS().get(department)).getZ());
+              player.setLocation(location);
+            }
+          }
+      }
+    }
+  }
+
+  public Department getDepartment(ItemStackSnapshot item) {
+    if (item.get(Keys.DISPLAY_NAME).isPresent())
+      for (Department dep : DepartmentsModule.getInstance().getDepartments().values()) {
+        if (((Text)item.get(Keys.DISPLAY_NAME).get()).toPlain().replace(" ", "_").equals(dep.getDisplayName()))
+          return dep;
+      }
+    return null;
+  }
+}
