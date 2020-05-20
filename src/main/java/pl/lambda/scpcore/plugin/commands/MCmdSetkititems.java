@@ -14,6 +14,7 @@ import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
+import pl.lambda.scpcore.SCPCore;
 import pl.lambda.scpcore.utils.classes.LambdaClass;
 
 import java.util.HashSet;
@@ -55,9 +56,12 @@ public class MCmdSetkititems implements CommandExecutor
 
         Player player = (Player) src;
         Set<ItemStack> kitItems = new HashSet<>();
-        for(Inventory slot : player.getInventory())
+        for(Inventory slot : player.getInventory().slots())
         {
-            slot.peek().ifPresent(kitItems::add);
+            if(slot.peek().isPresent())
+            {
+                kitItems.add(slot.peek().get());
+            }
         }
 
         lambdaClass.getClassKit().clear();

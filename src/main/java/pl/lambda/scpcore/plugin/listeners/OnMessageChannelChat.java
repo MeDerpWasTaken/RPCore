@@ -20,6 +20,9 @@ import pl.lambda.scpcore.utils.discordutils.DiscordRequest;
 import pl.lambda.scpcore.utils.enums.ChatType;
 import pl.lambda.scpcore.utils.players.LambdaPlayer;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class OnMessageChannelChat
 {
     @Listener
@@ -28,9 +31,12 @@ public class OnMessageChannelChat
         e.setCancelled(true);
         LambdaPlayer lambdaPlayer = SCPCore.getInstance().getLambdaPlayers().get(p.getUniqueId());
         LambdaClass currentClass = lambdaPlayer.getChosenClass();
+
+        Text message = formatGrammar(e.getRawMessage());
+
         if(currentClass == null)
         {
-            sendMessageToAllPlayers(Text.of(TextColors.WHITE, "[NONE] ", TextColors.GRAY, p.getName(), ": ", TextColors.WHITE, e.getRawMessage()));
+            sendMessageToAllPlayers(Text.of(TextColors.WHITE, "[NONE] ", TextColors.GRAY, p.getName(), ": ", TextColors.WHITE, message));
         }
         else
         {
@@ -47,11 +53,15 @@ public class OnMessageChannelChat
                 {
                     if(loopedLambdaPlayer.getRealName())
                     {
-                        loopedPlayer.sendMessage(Text.of(TextColors.DARK_PURPLE, "(Global) ", currentClass.getTextColor(), currentClass.getPrefix(), TextColors.GRAY, p.getName(), ": ", TextColors.WHITE, e.getRawMessage()));
+                        loopedPlayer.sendMessage(Text.of(TextColors.DARK_PURPLE, "(Global) ", currentClass.getTextColor(), currentClass.getPrefix(), ' ', TextColors.GRAY, p.getName(), ": ", TextColors.WHITE, message));
+                    }
+                    else if(loopedLambdaPlayer.isSpyMode())
+                    {
+                        loopedPlayer.sendMessage(Text.of(TextColors.RED, "(Spy) ", TextColors.DARK_PURPLE, "(Global) ", currentClass.getTextColor(), currentClass.getPrefix(), ' ', TextColors.GRAY, p.getName(), ": ", TextColors.WHITE, message));
                     }
                     else
                     {
-                        loopedPlayer.sendMessage(Text.of(TextColors.DARK_PURPLE, "(Global) ", currentClass.getTextColor(), currentClass.getPrefix(), TextColors.GRAY, lambdaPlayer.getNickname(), ": ", TextColors.WHITE, e.getRawMessage()));
+                        loopedPlayer.sendMessage(Text.of(TextColors.DARK_PURPLE, "(Global) ", currentClass.getTextColor(), currentClass.getPrefix(), ' ', TextColors.GRAY, lambdaPlayer.getNickname(), ": ", TextColors.WHITE, message));
                     }
                 }
                 else
@@ -62,18 +72,73 @@ public class OnMessageChannelChat
 
                     if(loopedPlayer.getPosition().distanceSquared(p.getPosition()) < 625D)
                     {
-                        loopedPlayer.sendMessage(Text.of(TextColors.GREEN, "(Local) ", currentClass.getTextColor(), currentClass.getPrefix(), TextColors.GRAY, nickname, ": ", TextColors.WHITE, e.getRawMessage()));
+                        loopedPlayer.sendMessage(Text.of(TextColors.GREEN, "(Local) ", currentClass.getTextColor(), currentClass.getPrefix(), ' ', TextColors.GRAY, nickname, ": ", TextColors.WHITE, message));
                     }
                     else
                     {
-                        if(loopedLambdaPlayer.isSpyMode())
+                        if(loopedLambdaPlayer.getRealName())
                         {
-                            loopedPlayer.sendMessage(Text.of(TextColors.RED, "(Spy) ", currentClass.getTextColor(), currentClass.getPrefix(), TextColors.GRAY, nickname, ": ", TextColors.WHITE, e.getRawMessage()));
+                            loopedPlayer.sendMessage(Text.of(currentClass.getTextColor(), currentClass.getPrefix(), ' ', TextColors.GRAY, p.getName(), ": ", TextColors.WHITE, message));
+                        }
+                        else if(loopedLambdaPlayer.isSpyMode())
+                        {
+                            loopedPlayer.sendMessage(Text.of(TextColors.RED, "(Spy) ", currentClass.getTextColor(), currentClass.getPrefix(), ' ', TextColors.GRAY, nickname, ": ", TextColors.WHITE, message));
                         }
                     }
                 }
             }
         }
+    }
+
+    private Text formatGrammar(Text text)
+    {
+        HashMap<String, String> errorsAndFixes = new HashMap<>();
+        errorsAndFixes.put("doesnt", "doesn't");
+        errorsAndFixes.put("cant", "can't");
+        errorsAndFixes.put("wont", "won't");
+        errorsAndFixes.put("dont", "don't");
+        errorsAndFixes.put("Ive", "I've");
+        errorsAndFixes.put("Id", "I'd");
+        errorsAndFixes.put("Im", "I'm");
+        errorsAndFixes.put("Ill", "I'll");
+        errorsAndFixes.put("shes", "she's");
+        errorsAndFixes.put("hes", "he's");
+        errorsAndFixes.put("its", "it's");
+        errorsAndFixes.put("theres", "there's");
+        errorsAndFixes.put("theyre", "they're");
+        errorsAndFixes.put("youve", "you've");
+        errorsAndFixes.put("couldnt", "couldn't");
+        errorsAndFixes.put("shouldnt", "shouldn't");
+        errorsAndFixes.put("wouldnt", "wouldn't");
+
+        String rawString = text.toPlain();
+        char firstChar = rawString.charAt(0);
+        if(!Character.isUpperCase(firstChar))
+        {
+            String withoutFirstLetter = rawString.substring(1);
+            rawString = Character.toUpperCase(firstChar) + withoutFirstLetter;
+        }
+
+
+        for(Map.Entry<String, String> loopErrors : errorsAndFixes.entrySet())
+        {
+            if(rawString.contains(loopErrors.getKey()))
+            {
+                rawString = rawString.replace(loopErrors.getKey(), loopErrors.getValue());
+            }
+            break;
+        }
+
+        char lastChar = rawString.charAt(rawString.length() - 1);
+        if(lastChar != '.' && lastChar != '?' && lastChar != '!' && lastChar != ':')
+        {
+            lastChar = '.';
+        }
+
+        rawString = rawString.substring(0, rawString.length() - 1);
+        rawString = rawString + lastChar;
+
+        return Text.of(rawString);
     }
 
     private void sendMessageToAllPlayers(Text message)

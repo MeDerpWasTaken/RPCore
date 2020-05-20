@@ -15,7 +15,7 @@ public class OnInteractBlock
     {
         BlockSnapshot clickedBlock = e.getTargetBlock();
         String name = clickedBlock.getExtendedState().getName();
-        p.sendMessage(Text.of(name));
+        //p.sendMessage(Text.of(name));
         if(Utils.isSneaking(p))
         {
             if(name.startsWith("blockcraftery:"))

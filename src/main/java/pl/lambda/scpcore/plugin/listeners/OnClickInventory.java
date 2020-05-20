@@ -31,6 +31,7 @@ public class OnClickInventory
             if(properties.contains(new InventoryTitle(Text.of("Choose department..."))))
             {
                 e.setCancelled(true);
+                p.closeInventory();
                 if(e.getCursorTransaction().isValid() && (e.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).isPresent())
                 {
                     Text displayName = (e.getCursorTransaction().getFinal()).get(Keys.DISPLAY_NAME).get();

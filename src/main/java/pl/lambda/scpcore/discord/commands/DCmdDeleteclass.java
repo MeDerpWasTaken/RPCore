@@ -3,6 +3,7 @@ package pl.lambda.scpcore.discord.commands;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import pl.lambda.scpcore.SCPCore;
 import pl.lambda.scpcore.discord.DiscordModule;
 import pl.lambda.scpcore.utils.Utils;
 import pl.lambda.scpcore.utils.classes.LambdaClass;
@@ -41,6 +42,7 @@ public class DCmdDeleteclass extends ListenerAdapter
             }
 
             check.deleteClass();
+            SCPCore.getInstance().getLambdaClasses().remove(check.getClassID());
             LambdaClass.loadClasses();
             e.getTextChannel().sendMessage("**Success!** Class has been deleted successfully!").queue();
         }

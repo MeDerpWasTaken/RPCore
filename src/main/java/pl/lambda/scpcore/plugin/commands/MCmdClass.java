@@ -46,7 +46,7 @@ public class MCmdClass implements CommandExecutor
             inventory = Inventory.builder().of(InventoryArchetypes.CHEST)
                     .property("inventorydimension", (InventoryProperty) new InventoryDimension(9, 3))
                     .property("inventorytitle", (InventoryProperty) new InventoryTitle(Text.of("Choose department...")))
-                    .build(this);
+                    .build(SCPCore.getInstance());
 
             int inventorySlot = 0;
             for(LambdaClass playerClass : playerClasses)
@@ -123,7 +123,8 @@ public class MCmdClass implements CommandExecutor
         {
             if (i == slotNumber)
             {
-                e.set(item);
+                //e.set(item);
+                e.offer(item);
                 continue;
             }
             i++;

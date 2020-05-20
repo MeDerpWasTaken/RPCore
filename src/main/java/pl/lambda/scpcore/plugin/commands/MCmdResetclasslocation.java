@@ -53,7 +53,7 @@ public class MCmdResetclasslocation implements CommandExecutor
     public static CommandSpec resetclasslocation = CommandSpec.builder()
             .executor(new MCmdResetclasslocation())
             .arguments(
-                    GenericArguments.optional(GenericArguments.string(Text.of("name")))
+                    GenericArguments.remainingJoinedStrings(Text.of("name"))
             )
             .build();
 }

@@ -7,7 +7,9 @@ import ninja.leaping.configurate.objectmapping.ObjectMappingException;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.util.TypeTokens;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import pl.lambda.scpcore.SCPCore;
@@ -175,10 +177,10 @@ public class LambdaClass
                 World w = world.get();
 
                 List<String> permissions = loopedClass.getNode("permissions").getList(TypeToken.of(String.class));
-                LambdaClass lambdaClass = new LambdaClass(loopedClass.getString(), name, prefix, discordID, itemsDisappear, textColor, dyeColor, new Location<World>(w, x, y, z), permissions);
+                LambdaClass lambdaClass = new LambdaClass(loopedClass.getKey().toString(), name, prefix, discordID, itemsDisappear, textColor, dyeColor, new Location<World>(w, x, y, z), permissions);
 
                 SCPCore.getInstance().getLogger().info("Class loaded: " + lambdaClass.toString());
-                SCPCore.getInstance().getLambdaClasses().put(loopedClass.getString(), lambdaClass);
+                SCPCore.getInstance().getLambdaClasses().put(loopedClass.getKey().toString(), lambdaClass);
             }
             catch (Exception e)
             {
@@ -211,7 +213,21 @@ public class LambdaClass
         node.getNode("classes", this.classID, "spawnLocation", "z").setValue(this.spawnLocation.getBlockZ());
         node.getNode("classes", this.classID, "spawnLocation", "w").setValue(this.spawnLocation.getExtent().getName());
         node.getNode("classes", this.classID, "permissions").setValue(this.permissions);
-        node.getNode("classes", this.classID, "kit").setValue(kitItemIDs);
+
+        int i = 0;
+        try
+        {
+            for(ItemStack kitItem : this.classKit)
+            {
+                ItemStackSnapshot snapshot = kitItem.createSnapshot();
+                node.getNode("classes", this.classID, "kit", i).setValue(TypeTokens.ITEM_SNAPSHOT_TOKEN, snapshot);
+                i++;
+            }
+        }
+        catch (ObjectMappingException e)
+        {
+            e.printStackTrace();
+        }
         classDataStorage.save();
     }
 
@@ -250,23 +266,32 @@ public class LambdaClass
 
     private List<ItemStack> loadKitItems()
     {
-        ClassDataStorage classDataStorage = new ClassDataStorage();
-        List<ItemStack> result = new ArrayList<>();
-        try
-        {
-            List<String> kitItems = classDataStorage.getNode().getNode("classes", this.classID, "kit").getList(TypeToken.of(String.class));
-            for(String itemID : kitItems)
-            {
-                ItemStack itemStack = Utils.loadItemFromString(itemID);
-                if(itemStack == null) continue;
-                result.add(itemStack);
-            }
-        }
-        catch (ObjectMappingException e)
-        {
-            e.printStackTrace();
-        }
+        ClassDataStorage classDataStorage = SCPCore.getInstance().getClassDataStorage();
+        List<ItemStack> kit = new ArrayList<>();
 
-        return result;
+        if(!classExist(this.classID)) return new ArrayList<>();
+
+        Map<Object, ? extends CommentedConfigurationNode> kitItems = classDataStorage.getNode().getNode("classes", this.classID, "kit").getChildrenMap();
+
+        if(kitItems.isEmpty()) { return new ArrayList<>(); }
+
+        for(CommentedConfigurationNode loopedKit : kitItems.values())
+        {
+            try
+            {
+                ItemStackSnapshot kitItem = loopedKit.getNode().getValue(TypeTokens.ITEM_SNAPSHOT_TOKEN);
+                if (kitItem != null)
+                {
+                    kit.add(kitItem.createStack());
+                }
+            }
+            catch (ObjectMappingException e)
+            {
+                e.printStackTrace();
+            }
+
+        }
+        
+        return kit;
     }
 }

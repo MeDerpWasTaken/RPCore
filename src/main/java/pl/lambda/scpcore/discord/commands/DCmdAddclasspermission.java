@@ -23,27 +23,29 @@ public class DCmdAddclasspermission extends ListenerAdapter
             String classID = pendingRequests.get(e.getMember());
             String permission = e.getMessage().getContentRaw();
 
+            if(permission.equalsIgnoreCase("stop"))
+            {
+                pendingRequests.remove(e.getMember());
+                e.getTextChannel().sendMessage("**Success!** Adding permissions is now stopped.").queue();
+                return;
+            }
+
             LambdaClass lambdaClass = SCPCore.getInstance().getLambdaClasses().getOrDefault(classID, null);
             if(lambdaClass == null)
             {
+                SCPCore.getInstance().getLogger().error("Issue DACP1: LambdaClass is null. classID=" + classID);
                 e.getTextChannel().sendMessage("**Error!** Something went wrong. Error code: DACP1.").queue();
                 pendingRequests.remove(e.getMember());
                 return;
             }
 
-            System.out.println(permission);
 
-            List<String> classPermissions = lambdaClass.getPermissions();
-
-            if(classPermissions == null)
-            {
-                classPermissions = new ArrayList<>();
-            }
+            List<String> gettedPermissions = lambdaClass.getPermissions();
+            List<String> classPermissions = new ArrayList<>(gettedPermissions);
 
             if(classPermissions.contains(permission))
             {
                 e.getTextChannel().sendMessage("**Error!** That class has this permission!").queue();
-                pendingRequests.remove(e.getMember());
                 return;
             }
 
@@ -53,10 +55,7 @@ public class DCmdAddclasspermission extends ListenerAdapter
             lambdaClass.saveClass();
             LambdaClass.loadClasses();
 
-            e.getTextChannel().sendMessage("**Success!** Permission " + permission + " added to: " + lambdaClass.getName() + "!").queue();
-
-            pendingRequests.remove(e.getMember());
-
+            e.getTextChannel().sendMessage("**Success!** Permission " + permission + " added to: " + lambdaClass.getName() + "! To add next one, just type it below. If you added every permission, type stop.").queue();
             return;
         }
 
@@ -83,8 +82,9 @@ public class DCmdAddclasspermission extends ListenerAdapter
                 return;
             }
 
+            System.out.println(lambdaClass.getClassID());
             pendingRequests.put(e.getMember(), lambdaClass.getClassID());
-            e.getTextChannel().sendMessage("**Success!** Now type permission that you want to add.").queue();
+            e.getTextChannel().sendMessage("**Success!** Now type permissions that you want to add. If you added every permission that you wanted, type stop.").queue();
         }
     }
 }

@@ -26,14 +26,14 @@ public class MCmdRealname implements CommandExecutor
         }
 
         LambdaPlayer lambdaPlayer = SCPCore.getInstance().getLambdaPlayers().get(((Player) src).getUniqueId());
-        if(lambdaPlayer.isSpyMode())
+        if(lambdaPlayer.getRealName())
         {
-            lambdaPlayer.setSpyMode(false);
+            lambdaPlayer.setRealName(false);
             src.sendMessage(Text.of(TextColors.RED, "You disabled real name mode!"));
         }
         else
         {
-            lambdaPlayer.setSpyMode(true);
+            lambdaPlayer.setRealName(true);
             src.sendMessage(Text.of(TextColors.GREEN, "You enabled real name mode!"));
         }
 
@@ -41,5 +41,5 @@ public class MCmdRealname implements CommandExecutor
     }
 
     public static CommandSpec realname = CommandSpec.builder()
-            .executor(new MCmdSpy()).build();
+            .executor(new MCmdRealname()).build();
 }

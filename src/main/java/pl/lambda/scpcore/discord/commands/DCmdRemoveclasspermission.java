@@ -23,6 +23,13 @@ public class DCmdRemoveclasspermission extends ListenerAdapter
             String classID = pendingRequests.get(e.getMember());
             String permission = e.getMessage().getContentRaw();
 
+            if(permission.equalsIgnoreCase("stop"))
+            {
+                pendingRequests.remove(e.getMember());
+                e.getTextChannel().sendMessage("**Success!** Removing permissions is now stopped.").queue();
+                return;
+            }
+
             LambdaClass lambdaClass = SCPCore.getInstance().getLambdaClasses().getOrDefault(classID, null);
             if(lambdaClass == null)
             {
@@ -41,7 +48,6 @@ public class DCmdRemoveclasspermission extends ListenerAdapter
             if(!classPermissions.contains(permission))
             {
                 e.getTextChannel().sendMessage("**Error!** That class doesn't have that permission!").queue();
-                pendingRequests.remove(e.getMember());
                 return;
             }
 
@@ -51,9 +57,8 @@ public class DCmdRemoveclasspermission extends ListenerAdapter
             lambdaClass.saveClass();
             LambdaClass.loadClasses();
 
-            e.getTextChannel().sendMessage("**Success!** Permission " + permission + " removed from: " + lambdaClass.getName() + "!").queue();
+            e.getTextChannel().sendMessage("**Success!** Permission " + permission + " removed from: " + lambdaClass.getName() + "! To remove next one, just type it. To stop removing permissions, type stop.").queue();
 
-            pendingRequests.remove(e.getMember());
             return;
         }
 

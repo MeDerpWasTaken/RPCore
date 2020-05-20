@@ -3,9 +3,12 @@ package pl.lambda.scpcore;
 import com.google.inject.Inject;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.game.state.*;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.plugin.Plugin;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.format.TextColors;
 import pl.lambda.scpcore.discord.DiscordModule;
 import pl.lambda.scpcore.plugin.commands.*;
 import pl.lambda.scpcore.plugin.listeners.*;
@@ -59,10 +62,10 @@ public class SCPCore
         instance = this;
 
         lambdaConfig = new LambdaConfig();
-        playerDataStorage = new PlayerDataStorage();
         syncDataStorage = new SyncDataStorage();
         classDataStorage = new ClassDataStorage();
         configData = new ConfigData();
+        playerDataStorage = new PlayerDataStorage();
         syncManager = new SyncManager();
         permissionsManager = new PermissionsManager();
 
@@ -97,6 +100,7 @@ public class SCPCore
         Sponge.getCommandManager().register(this, MCmdClearclasskit.clearclasskit, "clearclasskit", "deleteclasskit", "classkitremove");
         Sponge.getCommandManager().register(this, MCmdSetkititems.setkititems, "setkititems", "additemtokit", "pushitemstokit");
         Sponge.getCommandManager().register(this, MCmdKit.kit, "kit", "takekit", "receivekit");
+        Sponge.getCommandManager().register(this, MCmdResetkitcooldown.resetkitcooldown, "resetkitcooldown", "clearkitcooldown", "deletekitcooldown");
     }
 
     @Listener
@@ -113,6 +117,11 @@ public class SCPCore
     @Listener
     public void onServerStop(GameStoppingServerEvent event)
     {
+        for(Player p : Sponge.getServer().getOnlinePlayers())
+        {
+            SCPCore.getInstance().getDiscordModule().getSyncChannel().sendMessage("**Player left!** " + p.getName() + " has left the game.").queue();
+        }
+
         discordModule.getSyncChannel().sendMessage("**Server off!** Server has been turned off. Let's hope that it will be restated soon!").queue();
         syncManager.endSync();
         lambdaPlayers.clear();

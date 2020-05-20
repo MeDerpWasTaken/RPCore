@@ -125,13 +125,14 @@ public class Utils
         return buffer.toString();
     }
 
-    public static ItemStack loadItemFromString(String itemID)
+    public static ItemStack loadItemFromString(String itemID, int count)
     {
         Optional<ItemType> optionalItemType = Sponge.getRegistry().getType(ItemType.class, itemID);
         if(!optionalItemType.isPresent()) return null;
         ItemType type = optionalItemType.get();
         ItemStackSnapshot itemSnapshot = type.getTemplate();
         ItemStack item = itemSnapshot.createStack();
+        item.setQuantity(count);
 
         return item;
     }

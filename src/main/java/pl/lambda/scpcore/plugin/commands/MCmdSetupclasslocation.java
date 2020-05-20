@@ -52,7 +52,7 @@ public class MCmdSetupclasslocation implements CommandExecutor
     public static CommandSpec setupclasslocation = CommandSpec.builder()
             .executor(new MCmdSetupclasslocation())
             .arguments(
-                    GenericArguments.optional(GenericArguments.string(Text.of("name")))
+                    GenericArguments.remainingJoinedStrings(Text.of("name"))
             )
             .build();
 }

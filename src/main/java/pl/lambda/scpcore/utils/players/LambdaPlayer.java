@@ -1,6 +1,7 @@
 package pl.lambda.scpcore.utils.players;
 
-import com.google.common.reflect.TypeToken;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import ninja.leaping.configurate.commented.CommentedConfigurationNode;
 import pl.lambda.scpcore.SCPCore;
 import pl.lambda.scpcore.utils.classes.LambdaClass;
@@ -120,14 +121,28 @@ public class LambdaPlayer
             try
             {
                 long discordID = data.getNode("players", uuid.toString(), "discordID").getLong();
-                List<String> avaiableClasses = data.getNode("players", uuid.toString(), "availableClasses").getList(TypeToken.of(String.class));
-                List<LambdaClass> avaibleLambdaClasses = new ArrayList<>();
-                for(String lambdaClassID : avaiableClasses)
+                List<LambdaClass> availableLambdaClasses = new ArrayList<>();
+                if(SCPCore.getInstance().getDiscordModule().getGuild().getMemberById(discordID) == null)
                 {
-                    LambdaClass lambdaClass = SCPCore.getInstance().getLambdaClasses().getOrDefault(lambdaClassID, null);
-                    if(lambdaClass != null) avaibleLambdaClasses.add(lambdaClass);
+                    return new LambdaPlayer(uuid, nickname, discordID, ChatType.GLOBAL, null, availableLambdaClasses);
                 }
-                return new LambdaPlayer(uuid, nickname, discordID, ChatType.GLOBAL, null, avaibleLambdaClasses);
+
+                Member member = SCPCore.getInstance().getDiscordModule().getGuild().getMemberById(discordID);
+                if(member != null)
+                {
+                    List<Role> discordRoles = member.getRoles();
+                    for(Role role : discordRoles)
+                    {
+                        for(LambdaClass lambdaClass : SCPCore.getInstance().getLambdaClasses().values())
+                        {
+                            if(role.getIdLong() == lambdaClass.getDiscordID())
+                            {
+                                availableLambdaClasses.add(lambdaClass);
+                            }
+                        }
+                    }
+                }
+                return new LambdaPlayer(uuid, nickname, discordID, ChatType.GLOBAL, null, availableLambdaClasses);
             }
             catch (Exception e)
             {
@@ -138,7 +153,6 @@ public class LambdaPlayer
         }
 
         data.getNode("players", uuid.toString(), "discordID").setValue(0);
-        data.getNode("players", uuid.toString(), "availableClasses").setValue(new ArrayList<>());
         playerDataStorage.save();
 
         return new LambdaPlayer(uuid, nickname, 0, ChatType.GLOBAL, null, new ArrayList<>());
@@ -149,7 +163,7 @@ public class LambdaPlayer
         PlayerDataStorage playerDataStorage = SCPCore.getInstance().getPlayerDataStorage();
         CommentedConfigurationNode data = playerDataStorage.getNode();
 
-        return data.getNode("players", uuid.toString(), "discordID").isVirtual();
+        return !data.getNode("players", uuid.toString(), "discordID").isVirtual();
     }
 
     public void savePlayer()
@@ -165,7 +179,6 @@ public class LambdaPlayer
 
         data.getNode("players", this.uuid.toString(), "nickname").setValue(this.nickname);
         data.getNode("players", this.uuid.toString(), "discordID").setValue(this.discordID);
-        data.getNode("players", this.uuid.toString(), "availableClasses").setValue(classIDs);
         playerDataStorage.save();
     }
 }
