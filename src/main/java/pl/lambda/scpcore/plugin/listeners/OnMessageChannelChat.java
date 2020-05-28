@@ -32,7 +32,7 @@ public class OnMessageChannelChat
         LambdaPlayer lambdaPlayer = SCPCore.getInstance().getLambdaPlayers().get(p.getUniqueId());
         LambdaClass currentClass = lambdaPlayer.getChosenClass();
 
-        Text message = formatGrammar(e.getRawMessage());
+        Text message = formatGrammar(e.getRawMessage(), lambdaPlayer);
 
         if(currentClass == null)
         {
@@ -63,6 +63,8 @@ public class OnMessageChannelChat
                     {
                         loopedPlayer.sendMessage(Text.of(TextColors.DARK_PURPLE, "(Global) ", currentClass.getTextColor(), currentClass.getPrefix(), ' ', TextColors.GRAY, lambdaPlayer.getNickname(), ": ", TextColors.WHITE, message));
                     }
+
+                    SCPCore.getInstance().getDiscordModule().getSyncChannel().sendMessage("**" + p.getName() + ":** " + e.getMessage()).queue();
                 }
                 else
                 {
@@ -90,8 +92,10 @@ public class OnMessageChannelChat
         }
     }
 
-    private Text formatGrammar(Text text)
+    private Text formatGrammar(Text text, LambdaPlayer lambdaPlayer)
     {
+        if(!lambdaPlayer.isGrammarMode()) return text;
+
         HashMap<String, String> errorsAndFixes = new HashMap<>();
         errorsAndFixes.put("doesnt", "doesn't");
         errorsAndFixes.put("cant", "can't");
@@ -112,6 +116,7 @@ public class OnMessageChannelChat
         errorsAndFixes.put("wouldnt", "wouldn't");
 
         String rawString = text.toPlain();
+        String[] spitedString = rawString.split(" ");
         char firstChar = rawString.charAt(0);
         if(!Character.isUpperCase(firstChar))
         {
@@ -119,24 +124,25 @@ public class OnMessageChannelChat
             rawString = Character.toUpperCase(firstChar) + withoutFirstLetter;
         }
 
-
-        for(Map.Entry<String, String> loopErrors : errorsAndFixes.entrySet())
+        for(String part : spitedString)
         {
-            if(rawString.contains(loopErrors.getKey()))
+            for(Map.Entry<String, String> grammarError : errorsAndFixes.entrySet())
             {
-                rawString = rawString.replace(loopErrors.getKey(), loopErrors.getValue());
+                if(grammarError.getKey().equalsIgnoreCase(part))
+                {
+                    part = grammarError.getValue();
+                }
             }
-            break;
         }
+
+        rawString = String.join(" ", rawString);
 
         char lastChar = rawString.charAt(rawString.length() - 1);
-        if(lastChar != '.' && lastChar != '?' && lastChar != '!' && lastChar != ':')
+        if(!(lastChar == '.' || lastChar == '?' || lastChar == '!' || lastChar == ':'))
         {
             lastChar = '.';
+            rawString = rawString + lastChar;
         }
-
-        rawString = rawString.substring(0, rawString.length() - 1);
-        rawString = rawString + lastChar;
 
         return Text.of(rawString);
     }

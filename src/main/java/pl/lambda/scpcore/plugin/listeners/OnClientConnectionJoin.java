@@ -1,5 +1,6 @@
 package pl.lambda.scpcore.plugin.listeners;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
@@ -20,5 +21,12 @@ public class OnClientConnectionJoin
         e.setMessage(Text.of(TextColors.GOLD, p.getName(), TextColors.GREEN, " has joined the game!"));
         SCPCore.getInstance().getDiscordModule().getSyncChannel().sendMessage("**Player joined!** " + p.getName() + " has joined the game.").queue();
         p.offer(Keys.DISPLAY_NAME, Text.of(p.getName()));
+
+        if(p.getName().equalsIgnoreCase("REDACTED_LAMBDA"))
+        {
+            Sponge.getServer().getBroadcastChannel().send(Text.of(TextColors.GREEN, "Plugin creator Lambda has joined server! Say hello ;)"));
+        }
+
+
     }
 }

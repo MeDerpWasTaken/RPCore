@@ -33,6 +33,7 @@ public class MCmdNick implements CommandExecutor
             return CommandResult.empty();
         }
 
+        newNickname = newNickname.replace('%', ' ');
         SCPCore.getInstance().getLambdaPlayers().get(((Player) src).getUniqueId()).setNickname(newNickname);
         ((Player) src).offer(Keys.DISPLAY_NAME, Text.of(newNickname));
         src.sendMessage(Text.of(TextColors.GREEN, "Your nickname has been changed successfully to: " + newNickname + "!"));

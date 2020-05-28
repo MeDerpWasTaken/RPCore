@@ -1,5 +1,8 @@
 package pl.lambda.scpcore.plugin.commands;
 
+import io.github.nucleuspowered.nucleus.api.NucleusAPI;
+import io.github.nucleuspowered.nucleus.api.service.NucleusNicknameService;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.command.CommandException;
 import org.spongepowered.api.command.CommandResult;
 import org.spongepowered.api.command.CommandSource;
@@ -10,6 +13,9 @@ import org.spongepowered.api.command.spec.CommandSpec;
 import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.entity.living.player.gamemode.GameMode;
+import org.spongepowered.api.entity.living.player.tab.TabListEntry;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.InventoryArchetypes;
@@ -17,6 +23,9 @@ import org.spongepowered.api.item.inventory.InventoryProperty;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.property.InventoryDimension;
 import org.spongepowered.api.item.inventory.property.InventoryTitle;
+import org.spongepowered.api.scoreboard.Scoreboard;
+import org.spongepowered.api.scoreboard.Team;
+import org.spongepowered.api.scoreboard.Visibilities;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.text.format.TextColors;
 import pl.lambda.scpcore.SCPCore;
@@ -26,6 +35,7 @@ import pl.lambda.scpcore.utils.players.LambdaPlayer;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public class MCmdClass implements CommandExecutor
 {
@@ -104,6 +114,9 @@ public class MCmdClass implements CommandExecutor
                     permissionsManager.addPermission((Player) src, permission);
                 }
 
+                setName((Player)src, selectedClass);
+
+                ((Player)src).offer(Keys.DISPLAY_NAME, Text.of(selectedClass.getTextColor(), selectedClass.getPrefix(), TextColors.WHITE, " | ", lambdaPlayer.getNickname()));
                 src.sendMessage(Text.of(TextColors.GREEN, "Your current class is now: " + selectedClass.getName() + "!"));
             }
             else
@@ -128,6 +141,36 @@ public class MCmdClass implements CommandExecutor
                 continue;
             }
             i++;
+        }
+    }
+
+    public void setName(Player player, LambdaClass lambdaClass)
+    {
+        Team team;
+        Scoreboard playerScoreboard = player.getScoreboard();
+        Optional<Team> optionalTeam = playerScoreboard.getTeam(player.getName());
+        if (optionalTeam.isPresent())
+        {
+            team = optionalTeam.get();
+        }
+        else
+        {
+            team = Team.builder().name(player.getName()).build();
+            playerScoreboard.registerTeam(team);
+        }
+        team.addMember(Text.of(player.getName()));
+        team.setSuffix(Text.of(lambdaClass.getTextColor(), ' ', '[', lambdaClass.getPrefix(), ']'));
+
+        team.setNameTagVisibility(Visibilities.ALWAYS);
+        for (Player onlinePlayers : Sponge.getServer().getOnlinePlayers())
+        {
+            if (!onlinePlayers.getTabList().getEntry(player.getUniqueId()).isPresent())
+            {
+                Text name = NucleusAPI.getNicknameService().isPresent() ? ((NucleusAPI.getNicknameService().get()).getNickname(player).isPresent() ? (NucleusAPI.getNicknameService().get()).getNickname(player).get() : Text.of(player.getName())) : Text.of(player.getName());
+                onlinePlayers.getTabList().addEntry(TabListEntry.builder().list(onlinePlayers.getTabList())
+                        .displayName(Text.of((player.getScoreboard().getTeam(player.getName()).get()).getPrefix(), lambdaClass.getTextColor(), name, ((Team)player
+                                .getScoreboard().getTeam(player.getName()).get()).getSuffix())).profile(player.getProfile()).gameMode((GameMode)player.gameMode().get()).build());
+            }
         }
     }
 

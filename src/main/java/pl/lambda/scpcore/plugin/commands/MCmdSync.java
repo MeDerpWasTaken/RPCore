@@ -43,7 +43,7 @@ public class MCmdSync implements CommandExecutor
 
         syncManager.endSync(((Player) src).getUniqueId());
 
-        src.sendMessage(Text.of(TextColors.GREEN, "Your Discord account has been synced successfully!"));
+        ((Player) src).kick(Text.of(TextColors.GREEN, "Account synced successfully! Rejoin server and enjoy!"));
 
         return CommandResult.success();
     }

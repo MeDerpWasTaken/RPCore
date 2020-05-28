@@ -89,16 +89,16 @@ public class ConfigData
     {
         node.getNode("botToken").setValue("example-bot-token");
         node.getNode("invitation").setValue("https://discord.gg/example");
-        node.getNode("guildID").setValue(1234567890);
-        node.getNode("syncChannelID").setValue(987654321L);
+        node.getNode("guildID").setValue(0000000000L);
+        node.getNode("syncChannelID").setValue(0000000000L);
 
-        node.getNode("level0role").setValue(1098765432L);
-        node.getNode("level1role").setValue(2098765432L);
-        node.getNode("level2role").setValue(3098765432L);
-        node.getNode("level3role").setValue(4098765432L);
-        node.getNode("level4role").setValue(5098765432L);
-        node.getNode("level5role").setValue(6098765432L);
-        node.getNode("mutedRole").setValue(48594739345L);
+        node.getNode("level0role").setValue(0000000000L);
+        node.getNode("level1role").setValue(0000000000L);
+        node.getNode("level2role").setValue(0000000000L);
+        node.getNode("level3role").setValue(0000000000L);
+        node.getNode("level4role").setValue(0000000000L);
+        node.getNode("level5role").setValue(0000000000L);
+        node.getNode("mutedRole").setValue(0000000000L);
 
         node.getNode("kitCooldownInSeconds").setValue(21600);
         save();

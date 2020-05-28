@@ -1,6 +1,7 @@
 package pl.lambda.scpcore;
 
 import com.google.inject.Inject;
+import org.apache.logging.log4j.core.Appender;
 import org.slf4j.Logger;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
@@ -60,6 +61,7 @@ public class SCPCore
     {
         //configs & instance
         instance = this;
+        hookConsoleLogs();
 
         lambdaConfig = new LambdaConfig();
         syncDataStorage = new SyncDataStorage();
@@ -101,6 +103,8 @@ public class SCPCore
         Sponge.getCommandManager().register(this, MCmdSetkititems.setkititems, "setkititems", "additemtokit", "pushitemstokit");
         Sponge.getCommandManager().register(this, MCmdKit.kit, "kit", "takekit", "receivekit");
         Sponge.getCommandManager().register(this, MCmdResetkitcooldown.resetkitcooldown, "resetkitcooldown", "clearkitcooldown", "deletekitcooldown");
+        Sponge.getCommandManager().register(this, MCmdTooglegrammar.tooglegrammar, "togglegrammar", "autogrammar", "toggleautogrammar");
+        Sponge.getCommandManager().register(this, MCmdKeycard.keycard, "keycard", "receivekeycard", "kcard");
     }
 
     @Listener
@@ -128,6 +132,11 @@ public class SCPCore
         lambdaClasses.clear();
 
         discordModule.getJDA().shutdown();
+    }
+
+    private void hookConsoleLogs()
+    {
+
     }
 
     public static SCPCore getInstance()
