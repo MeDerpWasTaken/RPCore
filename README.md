@@ -1,4 +1,15 @@
 # Lambda SCPCore
- Plugin to Minecraft Sponge engine originally designed for Site-21 server. That adds some SCP Foundation stuff to game - departments, clearance levels, etc. Discord synchronization required.
+Plugin to Minecraft Sponge engine originally designed for Site-21 server. But this plugin can be used to create classes system with Discord synchronization. All you need is to create your Discord bot & config plugin in config.conf file.
 
-Site-21 Official Discord: https://discord.gg/BbH6kv6
+# Config
+botToken - there insert your bots token
+
+invitation - not mandatory, but it's recommended to put there permanent invitation to your Discord guild
+
+guildID - there insert your guild ID
+
+syncChannelID - there put ID of channel what will be output for Minecraft activities (for example - player join)
+
+level**X**role - due plugin was made for role-play server based around SCP Foundation universe, I applied clearance level system. You should fill out those fields, because it may crash the bot.
+
+mutedRole - mute role ID. If person has this role on Discord, they will be muted in-game too.
