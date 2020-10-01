@@ -15,7 +15,7 @@ level**X**role - due plugin was made for role-play server based around SCP Found
 mutedRole - mute role ID. If person has this role on Discord, they will be muted in-game too.
 
 # FOR CONTRIBUTORS - IMPORTANT
-If you want to use this project on your own, remember - you have to use shadowJar to include Apache libraries. If you include them manually - they will cause compile errors.
+If you want to use this project on your own, remember - you have to use shadowJar to include Apache libraries. If you include them manually - they will cause compile errors. For your own good, copy-paste build.gradle file.
 
 # Discord & Minecraft commands
 Description is in progress...
