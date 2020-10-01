@@ -1,5 +1,7 @@
-# Lambda SCPCore
-Plugin to Minecraft Sponge engine originally designed for Site-21 server. But this plugin can be used to create classes system with Discord synchronization. All you need is to create your Discord bot & config plugin in config.conf file.
+# RPCore (WIP)
+RPCore is a fork of SCPCore by Lambda that is being refit to better support other kinds of RP, and with some other minor changes
+
+Don't expect that much out of this, it's not going to change that much but will mainly just remove and change some of the SCP specific features
 
 # Config
 botToken - there insert your bots token
@@ -10,12 +12,12 @@ guildID - there insert your guild ID
 
 syncChannelID - there put ID of channel what will be output for Minecraft activities (for example - player join)
 
-level**X**role - due plugin was made for role-play server based around SCP Foundation universe, I applied clearance level system. You should fill out those fields, because it may crash the bot.
+level**X**role - because plugin was made for role-play server based around SCP Foundation universe, I applied clearance level system. You should fill out those fields, because it may crash the bot.
 
-mutedRole - mute role ID. If person has this role on Discord, they will be muted in-game too.
+mutedRole - mute role ID. If person has this role on Discord, they will be muted in-game as well.
 
 # FOR CONTRIBUTORS - IMPORTANT
-If you want to use this project on your own, remember - you have to use shadowJar to include Apache libraries. If you include them manually - they will cause compile errors. For your own good, copy-paste build.gradle file.
+If you wish to help contribute or create a fork, remember - you have to use shadowJar to include the Apache libraries. If you try to include them manually - they will cause compile errors. For your own good, copy-paste the build.gradle file.
 
 # Discord & Minecraft commands
 Description is in progress...
