@@ -43,7 +43,7 @@ public class OnReady extends ListenerAdapter
             module.setGuild(guild);
             module.setSyncChannel(textChannel);
 
-            textChannel.sendMessage("**Server is on!** What are you waiting for? Start Technic and join!").queue();
+            textChannel.sendMessage("**Server is on!** What are you waiting for? Start Minecraft and join!").queue();
         }
         catch (NullPointerException | GuildIsNullException | SyncChannelIsNullException ex)
         {
