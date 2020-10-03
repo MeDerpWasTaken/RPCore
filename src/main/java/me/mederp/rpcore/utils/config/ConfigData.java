@@ -18,8 +18,8 @@ public class ConfigData
 
     public void setup()
     {
-        dir = new File("config/scpCore/");
-        file = new File("config/scpCore/" + fileName);
+        dir = new File("config/rpCore/");
+        file = new File("config/rpCore/" + fileName);
         if (!dir.exists())
         {
             dir.mkdirs();
@@ -91,12 +91,6 @@ public class ConfigData
         node.getNode("guildID").setValue(0000000000L);
         node.getNode("syncChannelID").setValue(0000000000L);
 
-        node.getNode("level0role").setValue(0000000000L);
-        node.getNode("level1role").setValue(0000000000L);
-        node.getNode("level2role").setValue(0000000000L);
-        node.getNode("level3role").setValue(0000000000L);
-        node.getNode("level4role").setValue(0000000000L);
-        node.getNode("level5role").setValue(0000000000L);
         node.getNode("mutedRole").setValue(0000000000L);
 
         node.getNode("kitCooldownInSeconds").setValue(21600);

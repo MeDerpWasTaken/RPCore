@@ -18,8 +18,8 @@ public class SyncDataStorage
 
     public void setup()
     {
-        dir = new File("config/scpCore/");
-        file = new File("config/scpCore/" + fileName);
+        dir = new File("config/rpCore/");
+        file = new File("config/rpCore/" + fileName);
         if (!dir.exists())
         {
             dir.mkdirs();

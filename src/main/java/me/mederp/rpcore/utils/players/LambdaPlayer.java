@@ -106,37 +106,6 @@ public class LambdaPlayer
         this.grammarMode = grammarMode;
     }
 
-    public int getClearance()
-    {
-        LambdaConfig lambdaConfig = RPCore.getInstance().getLambdaConfig();
-        Member member = RPCore.getInstance().getDiscordModule().getGuild().getMemberById(this.discordID);
-        if(member == null) return -1;
-        int clearance = -1;
-
-        List<Role> roles = member.getRoles();
-        HashMap<Long, Integer> clearances = new HashMap<>();
-        clearances.put(lambdaConfig.getLevel0role(), 0);
-        clearances.put(lambdaConfig.getLevel1role(), 1);
-        clearances.put(lambdaConfig.getLevel2role(), 2);
-        clearances.put(lambdaConfig.getLevel3role(), 3);
-        clearances.put(lambdaConfig.getLevel4role(), 4);
-        clearances.put(lambdaConfig.getLevel5role(), 5);
-
-        for(Role role : roles)
-        {
-            if(clearances.containsKey(role.getIdLong()))
-            {
-                int loopedClearance = clearances.get(role.getIdLong());
-                if(loopedClearance > clearance)
-                {
-                    clearance = loopedClearance;
-                }
-            }
-        }
-
-        return clearance;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

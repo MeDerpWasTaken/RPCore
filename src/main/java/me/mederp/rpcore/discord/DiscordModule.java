@@ -29,7 +29,6 @@ public class DiscordModule
         try
         {
             this.jda = JDABuilder.create(config.getBotToken(), GatewayIntent.getIntents(GatewayIntent.ALL_INTENTS))
-                    .setActivity(Activity.watching("you"))
                     .addEventListeners(new OnReady(this), new OnMessageReceived(this))
                     .addEventListeners(
                             new DCmdSetupclass(this), new DCmdClasslist(this),

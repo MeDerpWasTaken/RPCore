@@ -22,14 +22,14 @@ public class MCmdNick implements CommandExecutor
 
         if(!src.hasPermission("lambda.scpcore.nick"))
         {
-            src.sendMessage(Text.of(TextColors.DARK_RED, "You have no permission to use that command!"));
+            src.sendMessage(Text.of(TextColors.DARK_RED, "You don't have permission to use that command!"));
             return CommandResult.empty();
         }
 
         String newNickname = args.<String>getOne(Text.of("nickname")).get();
         if(newNickname.length() > 16)
         {
-            src.sendMessage(Text.of(TextColors.RED, "Nickname can't be longer than 16 characters!"));
+            src.sendMessage(Text.of(TextColors.RED, "Nickname cannot be longer than 16 characters!"));
             return CommandResult.empty();
         }
 

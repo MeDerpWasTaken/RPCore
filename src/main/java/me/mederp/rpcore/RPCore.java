@@ -26,11 +26,12 @@ import java.util.UUID;
 
 @Plugin(
         id = "scpcore",
-        name = "SCPCore",
+        name = "RPCore",
         version = "1.0",
-        description = "Plugin to Minecraft Sponge engine originally designed for Site-21 server. That adds some SCP Foundation stuff to game - departments, clearance levels, etc. Discord synchronization required.",
+        description = "",
         authors = {
-                "Lambda"
+                "MeDerpWasTaken",
+                "Orginal Plugin by Lambda"
         }
 )
 public class RPCore
@@ -95,13 +96,12 @@ public class RPCore
         Sponge.getCommandManager().register(this, MCmdResetclasslocation.resetclasslocation, "resetclasslocation", "deleteclasslocation", "clearclasslocation");
         Sponge.getCommandManager().register(this, MCmdSetupclasslocation.setupclasslocation, "setupclasslocation", "setclasslocation", "changeclasslocation");
         Sponge.getCommandManager().register(this, MCmdRealname.realname, "realname", "shownicknames", "truenickname");
-        Sponge.getCommandManager().register(this, MCmdLambdareport.lambdareport, "lambdareport", "issuereport", "errorreport");
+        Sponge.getCommandManager().register(this, MCmdLambdareport.lambdareport, "scpcorereport");
         Sponge.getCommandManager().register(this, MCmdClearclasskit.clearclasskit, "clearclasskit", "deleteclasskit", "classkitremove");
         Sponge.getCommandManager().register(this, MCmdSetkititems.setkititems, "setkititems", "additemtokit", "pushitemstokit");
         Sponge.getCommandManager().register(this, MCmdKit.kit, "kit", "takekit", "receivekit");
         Sponge.getCommandManager().register(this, MCmdResetkitcooldown.resetkitcooldown, "resetkitcooldown", "clearkitcooldown", "deletekitcooldown");
         Sponge.getCommandManager().register(this, MCmdTooglegrammar.tooglegrammar, "togglegrammar", "autogrammar", "toggleautogrammar");
-        Sponge.getCommandManager().register(this, MCmdKeycard.keycard, "keycard", "receivekeycard", "kcard");
     }
 
     @Listener
@@ -123,7 +123,7 @@ public class RPCore
             RPCore.getInstance().getDiscordModule().getSyncChannel().sendMessage("**Player left!** " + p.getName() + " has left the game.").queue();
         }
 
-        discordModule.getSyncChannel().sendMessage("**Server off!** Server has been turned off. Let's hope that it will be restated soon!").queue();
+        discordModule.getSyncChannel().sendMessage("**Server off!** The server has been turned off. Let's hope that it will be back on soon!").queue();
         syncManager.endSync();
         lambdaPlayers.clear();
         lambdaClasses.clear();
