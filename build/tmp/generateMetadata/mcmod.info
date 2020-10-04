@@ -1,7 +1,7 @@
 [
     {
-        "modid": "scpcore",
-        "name": "Lambda-SCPCore",
+        "modid": "rpcore",
+        "name": "RPCore",
         "version": "1.0"
     }
 ]
