@@ -31,7 +31,7 @@ import java.util.UUID;
         description = "",
         authors = {
                 "MeDerpWasTaken",
-                "Orginal Plugin by Lambda"
+                "Lambda (Original Plugin)"
         }
 )
 public class RPCore
