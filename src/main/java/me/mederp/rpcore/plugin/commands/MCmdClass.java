@@ -52,8 +52,8 @@ public class MCmdClass implements CommandExecutor
         {
             //argument is empty, generate GUI
             inventory = Inventory.builder().of(InventoryArchetypes.CHEST)
-                    .property("inventorydimension", (InventoryProperty) new InventoryDimension(9, 3))
-                    .property("inventorytitle", (InventoryProperty) new InventoryTitle(Text.of("Choose department...")))
+                    .property("inventorydimension", new InventoryDimension(9, 3))
+                    .property("inventorytitle", new InventoryTitle(Text.of("Choose department...")))
                     .build(RPCore.getInstance());
 
             int inventorySlot = 0;
